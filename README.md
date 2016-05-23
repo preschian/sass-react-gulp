@@ -1,11 +1,11 @@
 # sass-react-gulp
 Starter kit compile ReactJS and Sass using Gulp.
 
-#### for the first time, intall dependencies
+## Install Dependencies (once)
 `npm install`
 
-#### development phase
+## Development
 `gulp`
 
-#### production phase
+## Production
 `gulp build`
