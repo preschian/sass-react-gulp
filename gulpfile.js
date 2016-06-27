@@ -89,6 +89,8 @@ gulp.task('html:compile', function () {
 });
 
 // compile react
+/*eslint no-undef: "error"*/
+/*eslint-env node*/
 function mapError(err) {
     if (err.fileName) {
         gutil.log(chalk.red(err.name)
@@ -115,7 +117,7 @@ function bundle(bundler) {
         .pipe(gulp.dest(PATH.JSX.OUTPUT))
         .pipe(bundleTimer)
         .pipe(notify({
-            message: 'React JSX recompile...',
+            message: 'React JSX recompile...'
         }));
 }
 
@@ -140,7 +142,7 @@ gulp.task('react:min', function() {
         .pipe(source(PATH.JSX.FILENAME))
         .pipe(buffer())
         .pipe(uglify())
-        .pipe(gulp.dest(PATH.JSX.OUTPUT))
+        .pipe(gulp.dest(PATH.JSX.OUTPUT));
 });
 
 // running all task
