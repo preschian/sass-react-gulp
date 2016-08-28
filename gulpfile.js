@@ -6,7 +6,6 @@ var sourcemaps        = require('gulp-sourcemaps')
 var watch             = require('gulp-watch')
 var path              = require('path')
 var run               = require('run-sequence')
-var webpack           = require('webpack')
 var webpackStream     = require('webpack-stream')
 
 // PATH
@@ -59,7 +58,7 @@ gulp.task('react', function() {
       cache: true,
       devtool: 'cheap-module-eval-source-map',
       output: {
-        filename: 'script.js',
+        filename: 'script.js'
       },
       module: {
         loaders: [{
@@ -71,7 +70,7 @@ gulp.task('react', function() {
           }
         }]
       }
-    })).on('error', function(err) {
+    })).on('error', function() {
       this.emit('end')
     })
     .pipe(gulp.dest(PATH.JSX.OUTPUT))
