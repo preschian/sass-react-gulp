@@ -1,17 +1,19 @@
-var serve             = require('browser-sync').create()
-var gulp              = require('gulp')
-var processhtml       = require('gulp-processhtml')
-var sass              = require('gulp-sass')
-var sourcemaps        = require('gulp-sourcemaps')
-var watch             = require('gulp-watch')
-var path              = require('path')
-var run               = require('run-sequence')
-var webpackStream     = require('webpack-stream')
+var serve           = require('browser-sync').create()
+var historyFallback = require('connect-history-api-fallback')
+var gulp            = require('gulp')
+var postcss         = require('gulp-postcss')
+var processhtml     = require('gulp-processhtml')
+var sass            = require('gulp-sass')
+var sourcemaps      = require('gulp-sourcemaps')
+var watch           = require('gulp-watch')
+var path            = require('path')
+var run             = require('run-sequence')
+var webpackStream   = require('webpack-stream')
 
 // PATH
-var BUILD   = './build'
-var DIST    = './dist'
-var PATH    = {
+var BUILD = './build'
+var DIST  = './dist'
+var PATH  = {
   HTML: {
     BUILD: path.join(BUILD, 'html/*.html'),
     WATCH: path.join(BUILD, 'html/**/*.html'),
@@ -40,37 +42,29 @@ gulp.task('html', function() {
 gulp.task('sass', function() {
   return gulp.src(PATH.SASS.BUILD)
     .pipe(sourcemaps.init())
-    .pipe(sass().on('error', sass.logError))
+    .pipe(sass({ includePaths: 'node_modules/' }).on('error', sass.logError))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(PATH.SASS.OUTPUT))
+    .pipe(serve.stream())
 })
 
 gulp.task('sass:min', function() {
   return gulp.src(PATH.SASS.BUILD)
-    .pipe(sass({ outputStyle: 'compressed' }))
+    .pipe(sass({ includePaths: 'node_modules/', outputStyle: 'compressed' }))
+    .pipe(
+      postcss([
+        require('css-mqpacker'),
+        require('cssnano')
+      ])
+    )
     .pipe(gulp.dest(PATH.SASS.OUTPUT))
 })
 
 // compile react
 gulp.task('react', function() {
   return gulp.src(PATH.JSX.WATCH)
-    .pipe(webpackStream({
-      cache: true,
-      devtool: 'cheap-module-eval-source-map',
-      output: {
-        filename: 'script.js'
-      },
-      module: {
-        loaders: [{
-          test: /\.jsx?/,
-          include: path.join(__dirname, 'build/jsx'),
-          loader: 'babel',
-          query: {
-            cacheDirectory: true
-          }
-        }]
-      }
-    })).on('error', function() {
+    .pipe(webpackStream(require('./.webpack-build.js')))
+    .on('error', function() {
       this.emit('end')
     })
     .pipe(gulp.dest(PATH.JSX.OUTPUT))
@@ -78,7 +72,7 @@ gulp.task('react', function() {
 
 gulp.task('react:min', function() {
   return gulp.src(PATH.JSX.WATCH)
-    .pipe(webpackStream(require('./webpack.config.js')))
+    .pipe(webpackStream(require('./.webpack-dist.js')))
     .pipe(gulp.dest(PATH.JSX.OUTPUT))
 })
 
@@ -98,7 +92,10 @@ gulp.task('watch', function() {
 gulp.task('browser', function() {
   serve.init({
     server: {
-      baseDir: './dist'
+      baseDir: DIST,
+      middleware: [
+        historyFallback()
+      ]
     }
   })
 })
@@ -106,4 +103,9 @@ gulp.task('browser', function() {
 // running all task
 gulp.task('default', function() {
   run('html', 'sass', 'react', 'watch', 'browser')
+})
+
+// minify files
+gulp.task('build', function() {
+  run('html', 'sass:min', 'react:min')
 })

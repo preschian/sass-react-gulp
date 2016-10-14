@@ -9,23 +9,30 @@
   },
   "scripts": {
     "start": "gulp",
-    "build": "gulp sass:min && webpack -p"
+    "build": "gulp build",
+    "sass-lint": "sass-lint build/**/*.scss -v -q"
   },
   "author": "Preschian Febryantara",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/preschian/sass-react-gulp/issues"
   },
-  "devDependencies": {
+  "dependencies": {
+    "babel-core": "^6.17.0",
     "babel-loader": "^6.2.4",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-preset-es2015": "^6.13.2",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-1": "^6.13.0",
+    "bourbon": "^4.2.7",
     "browser-sync": "^2.14.0",
+    "css-mqpacker": "^5.0.1",
+    "cssnano": "^3.7.7",
     "eslint": "^3.4.0",
     "eslint-plugin-react": "^6.1.2",
+    "flexiblegs-scss": "^5.5.3",
     "gulp": "^3.9.1",
+    "gulp-postcss": "^6.2.0",
     "gulp-processhtml": "^1.1.0",
     "gulp-sass": "^2.3.2",
     "gulp-sourcemaps": "^1.6.0",
@@ -33,9 +40,11 @@
     "live-server": "^1.0.0",
     "mobx": "^2.4.2",
     "mobx-react": "^3.5.4",
+    "normalize.css": "^5.0.0",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
     "run-sequence": "^1.2.1",
+    "sass-lint": "^1.9.1",
     "webpack": "^1.13.1",
     "webpack-stream": "^3.2.0"
   }

@@ -12,12 +12,13 @@
     "ecmaFeatures":  {
       "jsx": true,
       "experimentalObjectRestSpread": true
-}
+    }
   },
   "plugins": [
     "react"
   ],
   "rules": {
+    "react/jsx-uses-vars": [2],
     "no-console": 0,
     "indent": [
       "error",
